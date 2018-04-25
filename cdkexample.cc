@@ -11,10 +11,12 @@
 #include <fstream>
 #include <iomanip>
 #include <stdint.h>
+#include <string>
+#include <sstream>
 
-#define MATRIX_WIDTH 5
-#define MATRIX_HEIGHT 3
-#define BOX_WIDTH 15
+#define MATRIX_WIDTH 3
+#define MATRIX_HEIGHT 5
+#define BOX_WIDTH 20
 #define MATRIX_NAME_STRING "Test Matrix"
 
 using namespace std;
@@ -98,20 +100,84 @@ int main()
   //Get the Header Data
   ifstream binInfile ("cs3377.bin", ios::in | ios::binary);
   BinaryFileHeader *myHeader = new BinaryFileHeader();
-
-  binInfile.read((char *) myHeader, sizeof(BinaryFileRecord));
+  BinaryFileRecord *myRecord = new BinaryFileRecord();
   
-  binInfile.close();
-
-  char conversion[32];
-  sprintf(conversion, "%u", myHeader->magicNumber);
+  binInfile.read((char *) myHeader, sizeof(BinaryFileHeader));
+  
 
 
+  stringstream header;
+  stringstream record;
 
-  /*
-   *Display the Header
-   */
-  setCDKMatrixCell(myMatrix, 1, 1, conversion );
+  //Read From Header
+  string magicNumber, versionNumber, numRecords;
+  header << "Magic: 0x" << hex << uppercase << myHeader->magicNumber;
+  magicNumber = header.str();
+  header.str(""); //Clear
+  setCDKMatrixCell(myMatrix, 1, 1, magicNumber.c_str() );
+ 
+  header << dec << "Version: " << myHeader->versionNumber;
+  versionNumber = header.str();
+  header.str("");
+  setCDKMatrixCell(myMatrix, 1, 2, versionNumber.c_str());
+
+
+  header <<"NumRecords: " <<  myHeader->numRecords;
+  numRecords = header.str();
+  header.str("");
+  setCDKMatrixCell(myMatrix, 1, 3, numRecords.c_str());
+
+
+
+  //Read From Record
+  string str1, str2, str3, str4;
+  string length;
+
+  //First Read and display
+  binInfile.read((char *) myRecord,sizeof(BinaryFileRecord));
+  record << myRecord->stringBuffer;
+  str1 = record.str();
+  record.str("");
+  record << "strlen: " <<  strlen(str1.c_str());
+  length = record.str();
+  setCDKMatrixCell(myMatrix, 2, 1, length.c_str());
+  setCDKMatrixCell(myMatrix, 2, 2, str1.c_str());
+  record.str("");
+
+  //Second Read and display
+  binInfile.read((char *) myRecord,sizeof(BinaryFileRecord));
+  record << myRecord->stringBuffer;
+  str2 = record.str();
+  record.str("");
+  record << "strlen: " <<  strlen(str2.c_str());
+  length = record.str();
+  setCDKMatrixCell(myMatrix, 3, 1, length.c_str());
+  setCDKMatrixCell(myMatrix, 3, 2, str2.c_str());
+  record.str("");
+
+  //Third Read and display
+  binInfile.read((char *) myRecord,sizeof(BinaryFileRecord));
+  record << myRecord->stringBuffer;
+  str3 = record.str();
+  record.str("");
+  record << "strlen: " <<  strlen(str3.c_str());
+  length = record.str();
+  setCDKMatrixCell(myMatrix, 4, 1, length.c_str());
+  setCDKMatrixCell(myMatrix, 4, 2, str3.c_str());
+  record.str("");
+
+  //Fourth Read and display
+  binInfile.read((char *) myRecord,sizeof(BinaryFileRecord));
+  record << myRecord->stringBuffer;
+  str4 = record.str();
+  record.str("");
+  record << "strlen: " <<  strlen(str4.c_str());
+  length = record.str();
+  setCDKMatrixCell(myMatrix, 5, 1, length.c_str());
+  setCDKMatrixCell(myMatrix, 5, 2, str2.c_str());
+  record.str("");
+
+
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
