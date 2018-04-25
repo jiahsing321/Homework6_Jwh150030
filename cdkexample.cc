@@ -8,7 +8,9 @@
 
 #include <iostream>
 #include "cdk.h"
-
+#include <fstream>
+#include <iomanip>
+#include <stdint.h>
 
 #define MATRIX_WIDTH 5
 #define MATRIX_HEIGHT 3
@@ -16,6 +18,33 @@
 #define MATRIX_NAME_STRING "Test Matrix"
 
 using namespace std;
+
+
+class BinaryFileHeader
+{
+public: 
+  uint32_t magicNumber;
+  uint32_t versionNumber;
+  uint64_t numRecords;
+
+
+};
+
+//Size of the fixed length buffer
+const int maxRecordStringLength = 25;
+
+class BinaryFileRecord
+{
+public:
+  uint8_t strLength;
+  char stringBuffer[maxRecordStringLength];
+
+
+};
+
+
+
+
 
 
 int main()
@@ -65,10 +94,24 @@ int main()
   /* Display the Matrix */
   drawCDKMatrix(myMatrix, true);
 
+
+  //Get the Header Data
+  ifstream binInfile ("cs3377.bin", ios::in | ios::binary);
+  BinaryFileHeader *myHeader = new BinaryFileHeader();
+
+  binInfile.read((char *) myHeader, sizeof(BinaryFileRecord));
+  
+  binInfile.close();
+
+  char conversion[32];
+  sprintf(conversion, "%u", myHeader->magicNumber);
+
+
+
   /*
-   * Dipslay a message
+   *Display the Header
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
+  setCDKMatrixCell(myMatrix, 1, 1, conversion );
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
