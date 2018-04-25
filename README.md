@@ -1,1 +1,3 @@
-# Homework6_Jwh150030
+# Homework6
+# Jwh150030
+# Jia Hsing
