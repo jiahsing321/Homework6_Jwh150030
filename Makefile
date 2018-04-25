@@ -5,7 +5,7 @@
 #
 
 CXX = g++
-CXXFLAGS = -Wall -g 
+CXXFLAGS = -Wall -g -Wno-write-strings 
 CPPFLAGS = -I/scratch/perkins/include
 LDFLAGS = -L/scratch/perkins/lib
 LDLIBS = -lcdk -lcurses 
@@ -34,7 +34,7 @@ backup:
 	@make clean
 	@mkdir -p ~\backups; chmod 700 ~\backups
 	@$(eval CURDIRNAME := $(shell basename 'pwd'))
-	@$(eval MKBKUPNAME := ~/backups/$(PROJECTNAME)-$(shell date +'%Y.%m.%d-%H:%M:%S').tar.gz)
+	@$(eval MKBKUPNAME := ~/backups/$(PROJECTNAME) -$(shell date +'%Y.%m.%d-%H:%M:%S').tar.gz)
 	@echo
 	@echo Writing Backup file to: $(MKBKUPNAME)
 	@echo
